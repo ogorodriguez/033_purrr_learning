@@ -30,6 +30,8 @@ Purrr is all about iteration.  It uses the `map()` functions as substitute of th
 
 Purrr is a package built to work with lists, as much as dplyr was built to work with data frames.
 
+## What is a list?
+
 A **list** is an object used to collect other objects of various classes or types.  A list can contain a vector, a data frame, a single number or even other lists. 
 
 Here's an example of a list with some of the characteristics described above.  
