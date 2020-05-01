@@ -1,7 +1,7 @@
-name: "033_purrr_learning"
+name: 033_purrr_learning
 output_dir: ../docs
 navbar:
-  title: "033_purrr_learning"
+  title: 033_purrr_learning
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/ogorodriguez/033_purrr_learning
 output:
   workflowr::wflow_html:
     toc: yes
