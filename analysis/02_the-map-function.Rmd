@@ -1,5 +1,5 @@
 ---
-title: "02_the-map-function"
+title: "The map() Function"
 author: "ogorodriguez"
 date: "2020-05-01"
 output: workflowr::wflow_html
@@ -18,15 +18,176 @@ suppressPackageStartupMessages(library(tidyverse))
 theme_set(theme_light())
 ```
 
+
+## Introducing map()
+
+Purrr's `map()` function applies the same action to all elements of a list, or column of a data frame.  
+
+The naming convention of the `map()` functions help know beforehand what is the class of the resulting object or output.
+
+ * `map(.x, .f)` is the main mapping function and returns a list
+ * `map_df(.x, .f)` returns a data frame
+ * `map_dbl(.x, .f)` returns a numeric (double) vector
+ * `map_chr(.x, .f)` returns a character vector
+ * `map_lgl(.x, .f)` returns a logical vector
+ 
+### map() arguemnts
+
+The first argument of the `map()` function, the `.x` is the object we will iterate over; that is, .x is the data frame or list we will iterate over.  
+
+The second argument, the `.f` is the action or funcion we will do on each of the objects of our list, vector, or df.
+
+The `map()` functions work nicely with the ` %>%  ` and any other function of the tidyverse.
+
+## Simple repeated loop example
+
+In short, `map()` is for iteration.  
+
+The first example here will map a function that adds ten to the quantities found in a simple numerica vector consistig of 5 numbers random from 1 to 100.
+
 ```{r}
-pacman::p_load(tidyverse)
+# Create function add_10
+add_10 <- function(.x) {
+  return(.x + 10)
+}
 ```
 
 
-## Introduction
+```{r}
+# Create the vector with 5 random numbers. 
+rand_5 <- round(runif(5, 1, 101), 0)
+rand_5
+```
 
+Now let's apply the function we just created to all the numbers in our rand_5 vector
 
 ```{r}
-
+map(rand_5, add_10)
 ```
+
+The result obtained is a list of the numbers augmented by 10.
+
+If we specify that we want a vector we should use map_dbl.
+
+```{r}
+map_dbl(rand_5, add_10)
+```
+
+We can also map the results to characters
+
+```{r}
+map_chr(rand_5, add_10)
+```
+
+In order to get a data frame out of our vector rand_5 we need to get consistent column names.  So the we will need to add some more things to our add_10 function.
+
+We will create a data frame with one column having our original number and then a second column with the augmented number after adding 10.
+
+```{r}
+map_df(rand_5, function(.x) {
+  return(tibble(old_number = .x,
+                new_number = add_10(.x)))
+})
+```
+
+We would obtain the same results with this.  
+
+```{r}
+rand_5 %>% 
+  map_df(~ tibble(old_number = .,
+               new_number = add_10(.)))
+```
+
+In the previous two examples, the function used to call the tibble (the same as with the ~ in the second version of the example) that function is called an "anonymous" function since it was called and used only for that example.  It is not saved in the system as the `add_10` function is.  
+
+In the first anonymous function we used the .x argument but anything inside that parenthesis would have worked. 
+
+```{r}
+map_df(rand_5, function(y) {
+  return(tibble(old_number = y,
+                new_number = add_10(y)))
+})
+```
+
+## The modify() function
+
+The `modify()` function, unlike `map()`, returns the same object as the input.  It loses the versatility of `map()` but it gives more control onto the output.
+
+```{r}
+# If input is a vector.  The result is a vector
+modify(rand_5, add_10)
+```
+
+```{r}
+# With map(), the default output is always a list
+map(rand_5, add_10)
+```
+
+```{r}
+# If input is a df, output is a df with modify()
+modify(as_tibble(rand_5), add_10)
+```
+
+`modify`() has a version called `modify_if()` that only applies the function to elements that satisfy a given criteria that needs to be specified by a predicate function (.p).  
+
+In this example we will return a vector converting only the values in our `rand_5` vector that are greate than 50.
+
+```{r}
+modify_if(.x = rand_5,
+          .p = function(x) x > 50,
+          .f = add_10)
+```
+
+The results is a vector of the same length, and the application of the adding of ten was only done to the last three elements that were greater than 50.  
+
+
+## The dot(.) and the tilde(~)
+
+As I tried to do in few examples above, temporary or anonymous functions can be explicitly called or can be substitued by the tilde (~).  For example:
+
+```{r}
+function(x) {
+  x + 10
+}
+```
+
+Is the function used to add 10 to any number or element of a vector.
+
+The same can achieved with the following:
+
+```{r}
+~ (.x + 10)
+```
+
+
+
+The tilde(~) indicates that an anonymous function is being called.  The argument of the anonymous function is referred to using `.x` or simply the dot(.).  Unlike normal function arguments (that can take any value or letter not necessarily the letter x, or `.x`), when the tilde is used the argument is always `.x`.
+
+So the example to use insted of using the function add_10 would be:
+
+```{r}
+rand_5 %>% 
+  map_df(~ tibble(old_number = .x,
+               new_number = add_10(.x)))
+```
+
+Or
+
+```{r}
+map(rand_5, ~ (add_10(.x)))
+```
+
+```{r}
+map_dbl(rand_5, ~ (add_10(.x)))
+```
+
+
+
+
+
+
+
+
+
+
 
