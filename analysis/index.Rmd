@@ -8,4 +8,22 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+## Welcome
+
+Welcome to my notebook practice of the packege purrr.
+
+I will follow the same steps as indicated in [Rebecca Barter's website](http://www.rebeccabarter.com/blog/2019-08-19_purrr/)
+
+This website tries to simplify the explanation of the package since it seems a bit hard at first to understand.  Especially for those of us that do not have a background on IT.  
+
+Iteration is an operation that allows to repeat the same task or function to a set of objects.  It helps speed up code process avoiding repetitive manual inputs that may lead to errors as well as future difficulties in revising the code to fix potential errors.  
+
+The main purpose is to master the use of the main function of the package `map()`, and how to apply to a lis object.
+
+There are other tutorials online that are available and that can be checked out in conjunction to this one.  You can check [Jenny Bryant's tutorial](https://jennybc.github.io/purrr-tutorial/) as well [the site of the package in the tidyverse blog. ](https://purrr.tidyverse.org/) That site in tidyverse also connects [to the chapter in the R for Data Science Book on Iteration.](http://r4ds.had.co.nz/iteration.html)
+
+
+## Content
+
+ 1. [Preliminary Concepts](01_preliminary-concepts.html)
+ 2. [The `map()` Function](02_the-map-function.html)

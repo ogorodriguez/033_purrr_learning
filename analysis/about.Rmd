@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "purrr Package Pracice"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,4 +7,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+This notebook will cover the practice of the package purrr as explained in [this website from authoer Rebecca Barter.](http://www.rebeccabarter.com/blog/2019-08-19_purrr/)
+
+

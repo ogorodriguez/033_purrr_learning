@@ -1,0 +1,53 @@
+---
+title: "Preliminary concepts"
+author: "ogorodriguez"
+date: "2020-05-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  collapse = TRUE,
+  comment = "#>")
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyverse))
+theme_set(theme_light())
+
+```
+
+```{r}
+# Loading the needed packages
+pacman::p_load(tidyverse)
+```
+
+
+## Introduction
+
+Purrr is all about iteration.  It uses the `map()` functions as substitute of the Base R `apply` functions since its authors claim the purrr ones are more robust and consistent.
+
+Purrr is a package built to work with lists, as much as dplyr was built to work with data frames.
+
+A **list** is an object used to collect other objects of various classes or types.  A list can contain a vector, a data frame, a single number or even other lists. 
+
+Here's an example of a list with some of the characteristics described above.  
+
+```{r}
+my_first_list <- list(my_number = 5,
+                      my_vector = c("a", "b", "c"),
+                      my_df = tibble(a = 1:3, b = c("q", "b", "z"), c = c("bananas", "are", "so very great")))
+
+my_first_list
+
+
+```
+
+A **data frame** is a special case of a list.  It is a list of vectors of the same length.  
+
+```{r}
+# Check the clasee of my_first_list
+my_first_list %>% class()
+```
+

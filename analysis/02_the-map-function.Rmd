@@ -1,0 +1,32 @@
+---
+title: "02_the-map-function"
+author: "ogorodriguez"
+date: "2020-05-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  collapse = TRUE,
+  comment = "#>")
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyverse))
+theme_set(theme_light())
+```
+
+```{r}
+pacman::p_load(tidyverse)
+```
+
+
+## Introduction
+
+
+```{r}
+
+```
+
