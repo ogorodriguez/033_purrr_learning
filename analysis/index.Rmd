@@ -27,3 +27,4 @@ There are other tutorials online that are available and that can be checked out 
 
  1. [Preliminary Concepts](01_preliminary-concepts.html)
  2. [The `map()` Function](02_the-map-function.html)
+ 3. [Gapminder examples from simple to complex](03_the-map-gapminder-example.html)
