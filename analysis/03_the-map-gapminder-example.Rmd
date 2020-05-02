@@ -1,0 +1,190 @@
+---
+title: "map() Gapminder data example"
+author: "ogorodriguez"
+date: "2020-05-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  collapse = TRUE,
+  comment = "#>")
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyverse))
+theme_set(theme_light())
+```
+
+
+## The Gapminder data example
+
+In order to dive deeply into the functionalities of the purrr package, the author used the gapminder dataset that collects macroeconomic information about all countries.
+
+The idea is to start from a simple example into another that is more complex.  
+
+The workflow proposed is to load the data online as saving it with meaningful name so it indicates it is the raw data.  I will used teh suffix `_raw`, as opposed to the one used in the reference website.  Then a copy of the data set will be defined so that any modifications or data munging needed will be done to that copy.
+
+That raw data file will be saved into the /data folder
+
+
+```{r}
+# Download the data directly to the internet
+write_csv(read_csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/gh-pages/_episodes_rmd/data/gapminder-FiveYearData.csv"), here::here("data", "gapminder_raw.csv")) 
+```
+
+```{r}
+# Let's create the working copy
+gap_copy <- read_csv(here::here("data", "gapminder_raw.csv"))
+```
+
+Now that we have our working copy of the gapminder data set.  We can see some description of the file. 
+
+```{r}
+gap_copy %>% dim()
+```
+
+The file has 1704 rows and 6 columns.
+
+Let's take a glimpse of the data set
+
+```{r}
+gap_copy %>% 
+  glimpse()
+```
+
+
+We can see some column types of the likes of character (which I think should be factors, and some numeric)
+
+The skimr package `skim()` function will helps us see some more distributions on the character variables.
+
+```{r}
+gap_copy %>% 
+  skimr::skim()
+```
+
+The gapminder data set is widely famous and it is maintained very carefully.  There are no NAs.  It is a tidy data since every column correspond to a variable and every row correspond to an observation.
+
+```{r}
+gap_copy %>% 
+  head(10)
+```
+
+In this case, when using `map()` the functon will iterate over every column.  
+
+## Identifying the types of each column
+
+One simple example will be to extract the types or class or each column in single object (vector or df for example.)
+
+```{r}
+# as a data frame
+gap_copy %>% 
+  map_df(~ tibble(class = class(.x)))
+```
+
+Some columns are type character.  The idea is that they are type factor.  We can do a conversion using `modify()` perhaps.
+
+          
+```{r}
+# Converting only the column types that are character into factors
+gap_mod <- modify_if(.x = gap_copy,
+          .p = function(x) is.character(x),
+          .f = ~ (as_factor(.))) 
+```
+
+```{r}
+gap_mod %>% 
+  glimpse()
+```
+
+Now let's extract again its col types.
+
+```{r}
+gap_copy %>% 
+  map_chr(class)
+```
+
+## Getting the distinct values of each columns
+
+To get the distinct values, we can pass the `map_dbl()` function since it is a count and its result has to be numeric.
+
+```{r}
+gap_mod %>% 
+  map_dbl(n_distinct)
+```
+
+These results are vectors.  Ideally, it will be visually easier to interpret and even inviting to further manage if the previous information were presented as a data frame.  I tried to doing that in the `class()` example but was unable to.
+
+This complicates it a bit.  It seems that for us to have a data frame as a result of a `map()` operation (a data frame with meaningful columns and titles) we will need to pass an anonymous function to apply to each column.
+
+For example the following function calculates the distinct entries and the type of the current column.
+
+```{r}
+gap_mod %>% 
+  map_df(~ tibble(n_distinct = n_distinct(.x),
+                  class = class(.x)))
+```
+
+
+If we want to add the name of each column as another column in the previous data frame.  I tried doing that by using the `colnames()` or `names()` functions but I got an undesired result.  To solve this, the` .id` argument of `map_df()` has to be used.  That `.id` argument attaches the name of the element being iterated as a column in the output.  
+
+
+```{r}
+gap_mod %>% 
+  map_df(~ tibble(n_distinct = n_distinct(.x),
+                  class = class(.x)),
+         .id = "variable")
+```
+
+
+## Working from the simple to the complex
+
+One helper to understanding how map works is trying to figure out what type of output we want with one part of the data.  Then if we are able to obtain the desired result, we can then insert that formula into our map() functiont to make it work over the whole data frame.  
+
+For example.  I am going to extract the first column of the gapmnder data frame.  I am going to name .x for convenience later in copy pasting it into my map_df().  I will be using the gap_copy data set.
+
+
+```{r}
+.x <- gap_copy %>% pluck(1)
+```
+
+Let's preview it
+
+```{r}
+.x %>% head()
+```
+
+Now, I want to create a data frame that shows only the distinct values in this column together with its class.
+
+```{r}
+tibble(n_distinct = n_distinct(.x),
+       class = class(.x))
+```
+
+The result is the desired one.  The idea is now to plug the previous formula into a map_df() to iterate over the all of the data frame gap_copy
+
+```{r}
+gap_copy %>% 
+  map_df(~ tibble(n_distinct = n_distinct(.x),
+       class = class(.x)),
+       .id = "variable")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
