@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="ogorodriguez" />
+
+<meta name="date" content="2020-05-01" />
+
+<title>map with Multiple Input Objects</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">033_purrr_learning</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/ogorodriguez/033_purrr_learning">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">map with Multiple Input Objects</h1>
+<h4 class="author">ogorodriguez</h4>
+<h4 class="date">2020-05-01</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-05-03
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>033_purrr_learning/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200501code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200501)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200501code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200501)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomogorodriguez033purrrlearningtree9848eb4f9c397367a8d542278ee3765fd1c757c5targetblank9848eb4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/ogorodriguez/033_purrr_learning/tree/9848eb4f9c397367a8d542278ee3765fd1c757c5" target="_blank">9848eb4</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomogorodriguez033purrrlearningtree9848eb4f9c397367a8d542278ee3765fd1c757c5targetblank9848eb4a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/ogorodriguez/033_purrr_learning/tree/9848eb4f9c397367a8d542278ee3765fd1c757c5" target="_blank">9848eb4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  data/gap_copy.rds
+    Untracked:  data/gap_mod.rds
+    Untracked:  data/gapminder_raw.csv
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/04_map-over-multiple-input-objects.Rmd</code>) and HTML (<code>docs/04_map-over-multiple-input-objects.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ogorodriguez/033_purrr_learning/blob/9848eb4f9c397367a8d542278ee3765fd1c757c5/analysis/04_map-over-multiple-input-objects.Rmd" target="_blank">9848eb4</a>
+</td>
+<td>
+ogorodriguez
+</td>
+<td>
+2020-05-03
+</td>
+<td>
+Section 4 examples
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="iteration-with-more-than-one-object" class="section level2">
+<h2>Iteration with more than one object</h2>
+<p><code>map()</code> can be used to iterate over more than one element of a list or over more than one column in a data frame. For that the purrr package has functions to work with iterations over two objects, the <code>map2()</code> function and the <code>pmap()</code>function if we need to iterate with 2 or more.</p>
+<p>In this section we will work with an example that is going to create a list of plots to compare two of the columns of the gapminder data set: life expectancy and GDP for each continent/year combination.</p>
+<p>The arguments of the <code>map2()</code> are the two objects to iterate over and the function that will combine them both.</p>
+<blockquote>
+<p>map2(.x = object1, .y = object2, .f = name_of_function(.x, .y))</p>
+</blockquote>
+<p>For this specific example I will define a vector list of continents and a paired vector or list of years to iterate through.</p>
+<p>An important observation on how the iteration works. For example.</p>
+<p>if .x = c(“Americas”, “Asia”) is my continent vector and, .y = c(1952, 2007) is my year vector; the iteration is not going to over all of the combinations possible with .x and .y. Meaning, it is not going to start pairing something like (Americas, 1952) and then (Americas, 2007), and then (Asia, 1952) and then (Asia, 2007).</p>
+<p>The correct iteration will be first (America, 1952) then (Asia, 2007) only.</p>
+<p>It goes over the list row by corresponding row, it seems.</p>
+<p>In this case we will get our two element from the gapminder data set identified. One for the year and one for the continent.</p>
+<pre class="r"><code>gap_mod &lt;- read_rds(here::here(&quot;data&quot;, &quot;gap_mod.rds&quot;))
+
+continent_year &lt;- gap_mod %&gt;% distinct(continent, year)
+continent_year
+#&gt; # A tibble: 60 x 2
+#&gt;    continent  year
+#&gt;    &lt;fct&gt;     &lt;dbl&gt;
+#&gt;  1 Asia       1952
+#&gt;  2 Asia       1957
+#&gt;  3 Asia       1962
+#&gt;  4 Asia       1967
+#&gt;  5 Asia       1972
+#&gt;  6 Asia       1977
+#&gt;  7 Asia       1982
+#&gt;  8 Asia       1987
+#&gt;  9 Asia       1992
+#&gt; 10 Asia       1997
+#&gt; # ... with 50 more rows</code></pre>
+<pre class="r"><code># extract the continent and year as separate vectors
+continents &lt;- continent_year %&gt;% 
+  pull(continent) %&gt;% 
+  as.character()
+
+years &lt;- continent_year %&gt;% 
+  pull(year)</code></pre>
+<p>To be consistent with the basic arguments, we will pass the previous vectors to .x and .y variables.</p>
+<p>Before jumping into getting the corresponding graphs for all countries, we will try the code with one continent and one year to see the life expectancy of all the countries in that continent that given year.</p>
+<pre class="r"><code>.x &lt;- continents[1]
+.y &lt;- years[1]
+
+gap_mod %&gt;% 
+  filter(continent == .x,
+         year == .y) %&gt;% 
+  ggplot() +
+    geom_point(aes(x = gdpPercap, y = lifeExp)) + 
+    ggtitle(glue::glue(.x, &quot; &quot;, .y))</code></pre>
+<p><img src="figure/04_map-over-multiple-input-objects.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>This seems to work. I will use the log version of the gdpPercap variable to better see the differences between the countris with lower GDP per capita.</p>
+<pre class="r"><code>.x &lt;- continents[1]
+.y &lt;- years[1]
+
+gap_mod %&gt;% 
+  filter(continent == .x,
+         year == .y) %&gt;% 
+  ggplot() +
+    geom_point(aes(x = log(gdpPercap), y = lifeExp)) + 
+    ggtitle(glue::glue(.x, &quot; &quot;, .y))</code></pre>
+<p><img src="figure/04_map-over-multiple-input-objects.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>I will pass this code into a map2() function to gett all countries.</p>
+<pre class="r"><code>plot_list &lt;- map2(.x = continents,
+                  .y = years,
+                  .f = ~ (
+                    gap_mod %&gt;% 
+                      filter(continent == .x,
+                             year == .y) %&gt;% 
+                      ggplot() +
+                        geom_point(aes(x = log(gdpPercap), 
+                                       y = lifeExp)) + 
+                        ggtitle(glue::glue(.x, &quot; &quot;, .y))
+                  ))</code></pre>
+<p>The result is the creation of a list of graphs saved in the variable plot_list. We can start pulling graphs by calling them from their corresponding arguments.</p>
+<pre class="r"><code># GDP per capita in America in 1967
+plot_list[[40]]</code></pre>
+<p><img src="figure/04_map-over-multiple-input-objects.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># GDP per capita in Europe in 1997
+plot_list[[22]]</code></pre>
+<p><img src="figure/04_map-over-multiple-input-objects.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="list-columns-and-nested-data-frames" class="section level2">
+<h2>List columns and nested data frames</h2>
+<p>Tibbles are data frames where the columns can also be lists (not only vectors as in base R.)</p>
+<p>A tibble can nested, which means that some columns can contain grouped objects such as other data frames o lists.</p>
+<p>The next example will nest the gapminder dataset by continent.</p>
+<pre class="r"><code>gap_copy &lt;- read_rds(here::here(&quot;data&quot;, &quot;gap_copy.rds&quot;))
+gap_nest &lt;- gap_copy %&gt;% 
+  group_by(continent) %&gt;% 
+  nest()
+
+gap_nest
+#&gt; # A tibble: 5 x 2
+#&gt; # Groups:   continent [5]
+#&gt;   continent data              
+#&gt;   &lt;chr&gt;     &lt;list&gt;            
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt;
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt;
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt;
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt;
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;</code></pre>
+<p>In the previous result the first is the variable we grouped by, continent, and the second column is the rest of the data fram corresponding to that group.</p>
+<p>We can see the fifth entry displayed in detail here (Ocenia):</p>
+<pre class="r"><code>gap_nest$data[[5]]
+#&gt; # A tibble: 24 x 5
+#&gt;    country    year      pop lifeExp gdpPercap
+#&gt;    &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Australia  1952  8691212    69.1    10040.
+#&gt;  2 Australia  1957  9712569    70.3    10950.
+#&gt;  3 Australia  1962 10794968    70.9    12217.
+#&gt;  4 Australia  1967 11872264    71.1    14526.
+#&gt;  5 Australia  1972 13177000    71.9    16789.
+#&gt;  6 Australia  1977 14074100    73.5    18334.
+#&gt;  7 Australia  1982 15184200    74.7    19477.
+#&gt;  8 Australia  1987 16257249    76.3    21889.
+#&gt;  9 Australia  1992 17481977    77.6    23425.
+#&gt; 10 Australia  1997 18565243    78.8    26998.
+#&gt; # ... with 14 more rows</code></pre>
+<p>The same can be achieved using purrr’s pluck() function.</p>
+<pre class="r"><code># extract the fifth entry of the data column in gap_nest
+gap_nest %&gt;% 
+  pluck(&quot;data&quot;, 5)
+#&gt; # A tibble: 24 x 5
+#&gt;    country    year      pop lifeExp gdpPercap
+#&gt;    &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Australia  1952  8691212    69.1    10040.
+#&gt;  2 Australia  1957  9712569    70.3    10950.
+#&gt;  3 Australia  1962 10794968    70.9    12217.
+#&gt;  4 Australia  1967 11872264    71.1    14526.
+#&gt;  5 Australia  1972 13177000    71.9    16789.
+#&gt;  6 Australia  1977 14074100    73.5    18334.
+#&gt;  7 Australia  1982 15184200    74.7    19477.
+#&gt;  8 Australia  1987 16257249    76.3    21889.
+#&gt;  9 Australia  1992 17481977    77.6    23425.
+#&gt; 10 Australia  1997 18565243    78.8    26998.
+#&gt; # ... with 14 more rows</code></pre>
+<p>Nesting data frames can offer the possibility to use dplyr on more complex objects, not simply mutate() and the like. mutate() work when the columns are simply vectors.</p>
+<p>In order for mutate() to work with nested columns we need to use the map() function.</p>
+<pre class="r"><code>test_list &lt;- tibble(list_col = list(c(1, 5, 7), 
+                       5, 
+                       c(10, 10, 11))) %&gt;%
+  mutate(list_sum = map(list_col, ~ sum(.x)))</code></pre>
+<pre class="r"><code>test_list %&gt;% 
+  pluck(&quot;list_sum&quot;, 3)
+#&gt; [1] 31</code></pre>
+<p>Ir we want all sums as a list we can check:</p>
+<pre class="r"><code>test_list %&gt;% 
+  pull(list_sum) 
+#&gt; [[1]]
+#&gt; [1] 13
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] 5
+#&gt; 
+#&gt; [[3]]
+#&gt; [1] 31</code></pre>
+<p>If we wanted the result to be a vector, we can pass map_dbl() instead.</p>
+<pre class="r"><code>test_dbl &lt;- tibble(list_col = list(c(1, 5, 7), 
+                       5, 
+                       c(10, 10, 11))) %&gt;%
+  mutate(list_sum = map_dbl(list_col, sum))</code></pre>
+<pre class="r"><code>test_dbl
+#&gt; # A tibble: 3 x 2
+#&gt;   list_col  list_sum
+#&gt;   &lt;list&gt;       &lt;dbl&gt;
+#&gt; 1 &lt;dbl [3]&gt;       13
+#&gt; 2 &lt;dbl [1]&gt;        5
+#&gt; 3 &lt;dbl [3]&gt;       31</code></pre>
+<div id="nesting-the-gap-minder-data.-the-lifeexp-example" class="section level3">
+<h3>Nesting the gap minder data. The LifeExp example</h3>
+<p>The idea is to calculate the average life expectancy within each continent and add it as a new column using <code>mutate()</code>.</p>
+<p>If we use <code>mutate()</code> the traditional way, this will not work:</p>
+<pre class="r"><code>gap_nest %&gt;% 
+  mutate(avg_life_exp = mean(data$lifeExp))
+#&gt; # A tibble: 5 x 3
+#&gt; # Groups:   continent [5]
+#&gt;   continent data               avg_life_exp
+#&gt;   &lt;chr&gt;     &lt;list&gt;                    &lt;dbl&gt;
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt;           NA
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt;           NA
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt;           NA
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt;           NA
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;            NA</code></pre>
+<p>The code will not extract the <code>lifeExp</code> column for each data frame. Applying mutate to a data collumn will result in such errors since the data column in gap_nest is a list of data frames. The way to access data in list columns is via <code>map().</code></p>
+<p>We will try doing the mean lifeExp of a single continent and then we will expand it to the rest.</p>
+<p><code>.x</code> will be an individual nested data frame of gap_nest, say the first one, “Asia.” The following code defines it.</p>
+<pre class="r"><code># the first entry of the nested column &quot;data&quot; in gap_nest, which is Asia
+.x &lt;- gap_nest %&gt;% 
+  pluck(&quot;data&quot;, 1)
+
+.x
+#&gt; # A tibble: 396 x 5
+#&gt;    country      year      pop lifeExp gdpPercap
+#&gt;    &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Afghanistan  1952  8425333    28.8      779.
+#&gt;  2 Afghanistan  1957  9240934    30.3      821.
+#&gt;  3 Afghanistan  1962 10267083    32.0      853.
+#&gt;  4 Afghanistan  1967 11537966    34.0      836.
+#&gt;  5 Afghanistan  1972 13079460    36.1      740.
+#&gt;  6 Afghanistan  1977 14880372    38.4      786.
+#&gt;  7 Afghanistan  1982 12881816    39.9      978.
+#&gt;  8 Afghanistan  1987 13867957    40.8      852.
+#&gt;  9 Afghanistan  1992 16317921    41.7      649.
+#&gt; 10 Afghanistan  1997 22227415    41.8      635.
+#&gt; # ... with 386 more rows</code></pre>
+<p>To calculate the mean life expectancy then will be.</p>
+<pre class="r"><code>mean(.x$lifeExp)
+#&gt; [1] 60.0649</code></pre>
+<p>Now we need to copy this into the tilde-dot anonymous function for the rest. We will show this as a double column.</p>
+<pre class="r"><code>gap_nest %&gt;% 
+  mutate(avg_lifeExp = map_dbl(data, ~ mean(.x$lifeExp)))
+#&gt; # A tibble: 5 x 3
+#&gt; # Groups:   continent [5]
+#&gt;   continent data               avg_lifeExp
+#&gt;   &lt;chr&gt;     &lt;list&gt;                   &lt;dbl&gt;
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt;        60.1
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt;        71.9
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt;        48.9
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt;        64.7
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;         74.3</code></pre>
+<p>Without the nested columns…</p>
+<pre class="r"><code>gap_nest %&gt;% 
+  mutate(avg_lifeExp = map_dbl(data, ~ mean(.x$lifeExp))) %&gt;% 
+  select(continent, avg_lifeExp)
+#&gt; # A tibble: 5 x 2
+#&gt; # Groups:   continent [5]
+#&gt;   continent avg_lifeExp
+#&gt;   &lt;chr&gt;           &lt;dbl&gt;
+#&gt; 1 Asia             60.1
+#&gt; 2 Europe           71.9
+#&gt; 3 Africa           48.9
+#&gt; 4 Americas         64.7
+#&gt; 5 Oceania          74.3</code></pre>
+<p>Using summarise() will remove the nested column…</p>
+<pre class="r"><code>gap_nest %&gt;% 
+  summarise(avg_lifeExp2 = map_dbl(data, ~ mean(.x$lifeExp)))
+#&gt; # A tibble: 5 x 2
+#&gt;   continent avg_lifeExp2
+#&gt;   &lt;chr&gt;            &lt;dbl&gt;
+#&gt; 1 Africa            48.9
+#&gt; 2 Americas          64.7
+#&gt; 3 Asia              60.1
+#&gt; 4 Europe            71.9
+#&gt; 5 Oceania           74.3</code></pre>
+</div>
+<div id="how-to-fit-a-model-separately-for-each-continent." class="section level3">
+<h3>How to fit a model separately for each continent.</h3>
+<p>Fitting models using nested columns in data frames allows to run such models all within a single data frame and then extracting values from the model as we need to test, evaluate, compare, and predict.</p>
+<p>Building a simple linear model we will see how lifeExp can be modeled by population and gdpPercap.</p>
+<p>First, we will fit a linear model for each continent and save its result as a nested column.</p>
+<p>Starting from a basic unit of one continent as .x, again I will choose “Asia”, the linear model function will be..</p>
+<p><code>lm(lifeExp ~ pop + gdpPercap + year, data = .x)</code></p>
+<p>or simply <code>lm(lifeExp ~ ., data = .x)</code></p>
+<p>Testing.</p>
+<pre class="r"><code>lm(lifeExp ~ ., data = .x) %&gt;% broom::tidy()
+#&gt; # A tibble: 36 x 5
+#&gt;    term                   estimate std.error statistic   p.value
+#&gt;    &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 (Intercept)              -842.      20.1     -42.0  1.08e-140
+#&gt;  2 countryBahrain             28.2      1.32     21.3  7.91e- 66
+#&gt;  3 countryBangladesh          11.9      1.29      9.22 2.52e- 18
+#&gt;  4 countryCambodia            10.5      1.27      8.23 3.35e- 15
+#&gt;  5 countryChina               18.2      2.85      6.40 4.96e- 10
+#&gt;  6 countryHong Kong China     36.1      1.31     27.5  2.13e- 90
+#&gt;  7 countryIndia               11.3      2.25      5.01 8.52e-  7
+#&gt;  8 countryIndonesia           16.0      1.32     12.1  1.48e- 28
+#&gt;  9 countryIran                21.0      1.28     16.4  1.82e- 45
+#&gt; 10 countryIraq                19.1      1.28     14.9  1.36e- 39
+#&gt; # ... with 26 more rows</code></pre>
+<p>It does. Now let’s fit this into our nested df.</p>
+<pre class="r"><code>gap_lm &lt;- gap_nest %&gt;% 
+  mutate(lm_lifeExp = map(data, ~ (lm(lifeExp ~ pop + gdpPercap + year, data = .x))))
+
+gap_lm
+#&gt; # A tibble: 5 x 3
+#&gt; # Groups:   continent [5]
+#&gt;   continent data               lm_lifeExp
+#&gt;   &lt;chr&gt;     &lt;list&gt;             &lt;list&gt;    
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt; &lt;lm&gt;      
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt; &lt;lm&gt;      
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt; &lt;lm&gt;      
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt; &lt;lm&gt;      
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;  &lt;lm&gt;</code></pre>
+<p>To find the values of the model for Ocenia we use then…</p>
+<pre class="r"><code>gap_lm %&gt;% 
+  pluck(&quot;lm_lifeExp&quot;, 5)
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = lifeExp ~ pop + gdpPercap + year, data = .x)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)          pop    gdpPercap         year  
+#&gt;  -2.097e+02    8.365e-09    2.027e-04    1.415e-01</code></pre>
+<p>Imagine we want to predict now the response of the data stored in the data column using the corresponding linear model.</p>
+<pre class="r"><code>gap_pred &lt;- gap_lm %&gt;%
+  mutate(pred = map2(lm_lifeExp, data, function(.lm, .data) predict(.lm, .data)))
+
+gap_pred
+#&gt; # A tibble: 5 x 4
+#&gt; # Groups:   continent [5]
+#&gt;   continent data               lm_lifeExp pred       
+#&gt;   &lt;chr&gt;     &lt;list&gt;             &lt;list&gt;     &lt;list&gt;     
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt; &lt;lm&gt;       &lt;dbl [396]&gt;
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt; &lt;lm&gt;       &lt;dbl [360]&gt;
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt; &lt;lm&gt;       &lt;dbl [624]&gt;
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt; &lt;lm&gt;       &lt;dbl [300]&gt;
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;  &lt;lm&gt;       &lt;dbl [24]&gt;</code></pre>
+<p>We can then calculate the correlation between the predicted response and the actual lifeExp value to see if our model is good fit. We can use map2_dbl() since the correlation is one single value and it can be shown in the column.</p>
+<pre class="r"><code>gap_cor &lt;- gap_pred %&gt;% 
+  mutate(cor = map2_dbl(pred, data, function(.pred, .data) cor(.pred, .data$lifeExp)))
+
+gap_cor
+#&gt; # A tibble: 5 x 5
+#&gt; # Groups:   continent [5]
+#&gt;   continent data               lm_lifeExp pred          cor
+#&gt;   &lt;chr&gt;     &lt;list&gt;             &lt;list&gt;     &lt;list&gt;      &lt;dbl&gt;
+#&gt; 1 Asia      &lt;tibble [396 x 5]&gt; &lt;lm&gt;       &lt;dbl [396]&gt; 0.723
+#&gt; 2 Europe    &lt;tibble [360 x 5]&gt; &lt;lm&gt;       &lt;dbl [360]&gt; 0.834
+#&gt; 3 Africa    &lt;tibble [624 x 5]&gt; &lt;lm&gt;       &lt;dbl [624]&gt; 0.645
+#&gt; 4 Americas  &lt;tibble [300 x 5]&gt; &lt;lm&gt;       &lt;dbl [300]&gt; 0.779
+#&gt; 5 Oceania   &lt;tibble [24 x 5]&gt;  &lt;lm&gt;       &lt;dbl [24]&gt;  0.987</code></pre>
+</div>
+</div>
+<div id="advanced-example." class="section level2">
+<h2>Advanced example.</h2>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+#&gt; R version 3.6.1 (2019-07-05)
+#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)
+#&gt; Running under: Windows 10 x64 (build 18362)
+#&gt; 
+#&gt; Matrix products: default
+#&gt; 
+#&gt; locale:
+#&gt; [1] LC_COLLATE=Spanish_Spain.1252  LC_CTYPE=Spanish_Spain.1252   
+#&gt; [3] LC_MONETARY=Spanish_Spain.1252 LC_NUMERIC=C                  
+#&gt; [5] LC_TIME=Spanish_Spain.1252    
+#&gt; 
+#&gt; attached base packages:
+#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
+#&gt; 
+#&gt; other attached packages:
+#&gt; [1] forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.3    
+#&gt; [5] readr_1.3.1     tidyr_1.0.2     tibble_3.0.0    tidyverse_1.3.0
+#&gt; [9] ggplot2_3.3.0  
+#&gt; 
+#&gt; loaded via a namespace (and not attached):
+#&gt;  [1] tidyselect_1.0.0 xfun_0.12        haven_2.2.0      lattice_0.20-40 
+#&gt;  [5] colorspace_1.4-1 vctrs_0.2.4      generics_0.0.2   htmltools_0.4.0 
+#&gt;  [9] yaml_2.2.1       utf8_1.1.4       rlang_0.4.5      later_1.0.0     
+#&gt; [13] pillar_1.4.3     glue_1.4.0       withr_2.1.2      DBI_1.1.0       
+#&gt; [17] dbplyr_1.4.2     readxl_1.3.1     modelr_0.1.6     lifecycle_0.2.0 
+#&gt; [21] cellranger_1.1.0 munsell_0.5.0    gtable_0.3.0     workflowr_1.6.2 
+#&gt; [25] rvest_0.3.5      evaluate_0.14    labeling_0.3     knitr_1.28      
+#&gt; [29] httpuv_1.5.2     fansi_0.4.0      broom_0.5.5      Rcpp_1.0.4.6    
+#&gt; [33] promises_1.1.0   scales_1.1.0     backports_1.1.6  jsonlite_1.6.1  
+#&gt; [37] farver_2.0.3     fs_1.4.1         hms_0.5.3        digest_0.6.25   
+#&gt; [41] stringi_1.4.6    grid_3.6.1       rprojroot_1.3-2  here_0.1        
+#&gt; [45] cli_2.0.2        tools_3.6.1      magrittr_1.5     crayon_1.3.4    
+#&gt; [49] whisker_0.4      pkgconfig_2.0.3  ellipsis_0.3.0   xml2_1.3.1      
+#&gt; [53] reprex_0.3.0     lubridate_1.7.8  rstudioapi_0.11  assertthat_0.2.1
+#&gt; [57] rmarkdown_2.1    httr_1.4.1       R6_2.4.1         nlme_3.1-144    
+#&gt; [61] git2r_0.26.1     compiler_3.6.1</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
