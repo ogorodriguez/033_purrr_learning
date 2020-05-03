@@ -1,0 +1,341 @@
+---
+title: "map with Multiple Input Objects"
+author: "ogorodriguez"
+date: "2020-05-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE, message = FALSE,
+  collapse = TRUE,
+  comment = "#>")
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyverse))
+theme_set(theme_light())
+```
+
+
+## Iteration with more than one object
+
+`map()` can be used to iterate over more than one element of a list or over more than one column in a data frame.  For that the purrr package has functions to work with iterations over two objects, the `map2()` function and the `pmap()`function if we need to iterate with 2 or more.
+
+In this section we will work with an example that is going to create a list of plots to compare two of the columns of the gapminder data set: life expectancy and GDP for each continent/year combination.
+
+The arguments of the `map2()` are the two objects to iterate over and the function that will combine them both.
+
+
+> map2(.x = object1,
+    .y = object2,
+    .f = name_of_function(.x, .y))
+
+
+For this specific example I will define a vector list of continents and a paired vector or list of years to iterate through.
+
+An important observation on how the iteration works.  For example.
+
+if .x = c("Americas", "Asia") is my continent vector and,
+.y = c(1952, 2007) is my year vector; the iteration is not going to over all of the combinations possible with .x and .y.  Meaning, it is not going to start pairing something like (Americas, 1952) and then (Americas, 2007), and then (Asia, 1952) and then (Asia, 2007).
+
+The correct iteration will be first (America, 1952) then (Asia, 2007) only.
+
+It goes over the list row by corresponding row, it seems.
+
+In this case we will get our two element from the gapminder data set identified.  One for the year and one for the continent.
+
+
+
+```{r}
+gap_mod <- read_rds(here::here("data", "gap_mod.rds"))
+
+continent_year <- gap_mod %>% distinct(continent, year)
+continent_year
+```
+
+```{r}
+# extract the continent and year as separate vectors
+continents <- continent_year %>% 
+  pull(continent) %>% 
+  as.character()
+
+years <- continent_year %>% 
+  pull(year)
+
+```
+
+
+To be consistent with the basic arguments, we will pass the previous vectors to .x and .y variables.
+
+Before jumping into getting the corresponding graphs for all countries, we will try the code with one continent and one year to see the life expectancy of all the countries in that continent that given year.
+
+```{r}
+.x <- continents[1]
+.y <- years[1]
+
+gap_mod %>% 
+  filter(continent == .x,
+         year == .y) %>% 
+  ggplot() +
+    geom_point(aes(x = gdpPercap, y = lifeExp)) + 
+    ggtitle(glue::glue(.x, " ", .y))
+
+```
+
+This seems to work.  I will use the log version of the gdpPercap variable to better see the differences between the countris with lower GDP per capita.  
+
+```{r}
+.x <- continents[1]
+.y <- years[1]
+
+gap_mod %>% 
+  filter(continent == .x,
+         year == .y) %>% 
+  ggplot() +
+    geom_point(aes(x = log(gdpPercap), y = lifeExp)) + 
+    ggtitle(glue::glue(.x, " ", .y))
+
+```
+
+I will pass this code into a map2() function to gett all countries.
+
+```{r}
+plot_list <- map2(.x = continents,
+                  .y = years,
+                  .f = ~ (
+                    gap_mod %>% 
+                      filter(continent == .x,
+                             year == .y) %>% 
+                      ggplot() +
+                        geom_point(aes(x = log(gdpPercap), 
+                                       y = lifeExp)) + 
+                        ggtitle(glue::glue(.x, " ", .y))
+                  ))
+```
+
+
+The result is the creation of a list of graphs saved in the variable plot_list.  We can start pulling graphs by calling them from their corresponding arguments.
+
+```{r}
+# GDP per capita in America in 1967
+plot_list[[40]]
+```
+
+
+```{r}
+# GDP per capita in Europe in 1997
+plot_list[[22]]
+```
+
+## List columns and nested data frames
+
+Tibbles are data frames where the columns can also be lists (not only vectors as in base R.)
+
+A tibble can nested, which means that some columns can contain grouped objects such as other data frames o lists.
+
+The next example will nest the gapminder dataset by continent.  
+
+```{r}
+gap_copy <- read_rds(here::here("data", "gap_copy.rds"))
+gap_nest <- gap_copy %>% 
+  group_by(continent) %>% 
+  nest()
+
+gap_nest
+```
+
+In the previous result the first is the variable we grouped by, continent, and the second column is the rest of the data fram corresponding to that group.  
+
+We can see the fifth entry displayed in detail here (Ocenia):
+
+```{r}
+gap_nest$data[[5]]
+
+```
+
+The same can be achieved using purrr's pluck() function.
+
+```{r}
+# extract the fifth entry of the data column in gap_nest
+gap_nest %>% 
+  pluck("data", 5)
+  
+```
+
+
+Nesting data frames can offer the possibility to use dplyr on more complex objects, not simply mutate() and the like.  mutate() work when the columns are simply vectors.  
+
+In order for mutate() to work with nested columns we need to use the map() function.
+
+
+```{r}
+test_list <- tibble(list_col = list(c(1, 5, 7), 
+                       5, 
+                       c(10, 10, 11))) %>%
+  mutate(list_sum = map(list_col, ~ sum(.x)))
+
+```
+
+```{r}
+test_list %>% 
+  pluck("list_sum", 3)
+```
+
+Ir we want all sums as a list we can check:
+
+```{r}
+test_list %>% 
+  pull(list_sum) 
+
+```
+
+
+If we wanted the result to be a vector, we can pass map_dbl() instead.
+
+```{r}
+test_dbl <- tibble(list_col = list(c(1, 5, 7), 
+                       5, 
+                       c(10, 10, 11))) %>%
+  mutate(list_sum = map_dbl(list_col, sum))
+
+```
+
+```{r}
+test_dbl
+```
+
+### Nesting the gap minder data.  The LifeExp example
+
+The idea is to calculate the average life expectancy within each continent and add it as a new column using `mutate()`.
+
+If we use `mutate()` the traditional way, this will not work:
+
+```{r}
+gap_nest %>% 
+  mutate(avg_life_exp = mean(data$lifeExp))
+```
+
+
+The code will not extract the `lifeExp` column for each data frame.  Applying mutate to a data collumn will result in such errors since the data column in gap_nest is a list of data frames.  The way to access data in list columns is via `map().`
+
+We will try doing the mean lifeExp of a single continent and then we will expand it to the rest.
+
+`.x` will be an individual nested data frame of gap_nest, say the first one, "Asia."  The following code defines it.
+
+```{r}
+# the first entry of the nested column "data" in gap_nest, which is Asia
+.x <- gap_nest %>% 
+  pluck("data", 1)
+
+.x
+
+```
+
+To calculate the mean life expectancy then will be.
+
+```{r}
+mean(.x$lifeExp)
+```
+
+Now we need to copy this into the tilde-dot anonymous function for the rest.  We will show this as a double column.
+
+```{r}
+gap_nest %>% 
+  mutate(avg_lifeExp = map_dbl(data, ~ mean(.x$lifeExp)))
+
+```
+
+
+Without the nested columns...
+
+```{r}
+gap_nest %>% 
+  mutate(avg_lifeExp = map_dbl(data, ~ mean(.x$lifeExp))) %>% 
+  select(continent, avg_lifeExp)
+
+```
+
+Using summarise() will remove the nested column...
+
+```{r}
+gap_nest %>% 
+  summarise(avg_lifeExp2 = map_dbl(data, ~ mean(.x$lifeExp)))
+
+```
+
+
+### How to fit a model separately for each continent.
+
+Fitting models using nested columns in data frames allows to run such models all within a single data frame and then extracting values from the model as we need to test, evaluate, compare, and predict.
+
+Building a simple linear model we will see how lifeExp can be modeled by population and gdpPercap.  
+
+First, we will fit a linear model for each continent and save its result as a nested column.
+
+Starting from a basic unit of one continent as .x, again I will choose "Asia", the linear model function will be..
+
+`lm(lifeExp ~ pop + gdpPercap + year, data = .x)`
+
+or simply `lm(lifeExp ~ ., data = .x)`
+
+Testing.
+
+```{r}
+lm(lifeExp ~ ., data = .x) %>% broom::tidy()
+```
+
+It does.  Now let's fit this into our nested df.
+
+```{r}
+gap_lm <- gap_nest %>% 
+  mutate(lm_lifeExp = map(data, ~ (lm(lifeExp ~ pop + gdpPercap + year, data = .x))))
+
+gap_lm
+
+```
+
+
+To find the values of the model for Ocenia we use then...
+
+```{r}
+gap_lm %>% 
+  pluck("lm_lifeExp", 5)
+```
+
+Imagine we want to predict now the response of the data stored in the data column using the corresponding linear model.  
+
+```{r}
+gap_pred <- gap_lm %>%
+  mutate(pred = map2(lm_lifeExp, data, function(.lm, .data) predict(.lm, .data)))
+
+gap_pred
+  
+```
+
+We can then calculate the correlation between the predicted response and the actual lifeExp value to see if our model is good fit.  We can use map2_dbl() since the correlation is one single value and it can be shown in the column.
+
+```{r}
+gap_cor <- gap_pred %>% 
+  mutate(cor = map2_dbl(pred, data, function(.pred, .data) cor(.pred, .data$lifeExp)))
+
+gap_cor
+
+```
+
+## Advanced example.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

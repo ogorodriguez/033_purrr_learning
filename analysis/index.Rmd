@@ -13,6 +13,7 @@ editor_options:
  1. [Preliminary Concepts](01_preliminary-concepts.html)
  2. [The `map()` Function](02_the-map-function.html)
  3. [Gapminder examples from simple to complex](03_the-map-gapminder-example.html)
+ 4. [`map()` Over Multiple Inputs](04_map-over-multiple-input-objects.html)
 
 
 ## Welcome

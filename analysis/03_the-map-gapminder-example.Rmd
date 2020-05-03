@@ -172,6 +172,12 @@ gap_copy %>%
        .id = "variable")
 ```
 
+Now we will save the new datasets in our system.
+
+```{r}
+write_rds(gap_copy, here::here("data", "gap_copy.rds"))
+write_rds(gap_mod, here::here("data", "gap_mod.rds"))
+```
 
 
 
